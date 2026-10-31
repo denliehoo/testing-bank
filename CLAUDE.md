@@ -12,6 +12,8 @@ Run `npm run check` before proposing any commit.
 
 Use Conventional Commits: `<type>: <summary>` in lowercase imperative, e.g. `feat: add dashboard transaction list`, `fix: keep amount on back`, `chore: add project conventions`. Common types: `feat`, `fix`, `chore`, `test`, `docs`, `refactor`, `style`, `ci`. Don't commit without the owner's review.
 
+`main` is protected: no direct pushes. Work on a branch (`feat/...`, `fix/...`), push it, open a pull request with `gh pr create`, and merge when both CI jobs are green. Merging deploys.
+
 ## Hard rules
 
 - **Don't edit** `mock-api/`, `src/mocks/`, or the seed data. Override responses inside a test with `server.use(...)`.
