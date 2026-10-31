@@ -2,6 +2,7 @@ import { screen, within } from '@testing-library/react'
 import type { UserEvent } from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
+import { formatMoney } from '@/lib/format'
 import { money, renderDashboard } from '@/test/utils'
 import { server } from '@/test/setup'
 
@@ -102,6 +103,10 @@ describe('transfer dialog', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Transfer to Jamie Tan')).toBeInTheDocument()
     expect(screen.getByText(money(5000 - 120))).toBeInTheDocument()
+    // The limit bar moves with it (an attribute, so no whitespace normalising).
+    expect(
+      screen.getByRole('progressbar', { name: 'Daily limit used' }),
+    ).toHaveAttribute('aria-valuetext', `${formatMoney(120)} of ${formatMoney(5000)} used`)
   })
 
   it('stays on review with an alert when sending fails', async () => {

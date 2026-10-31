@@ -28,6 +28,33 @@
   font-size: var(--text-sm);
 }
 
+/* Reset first: each browser draws its own bar, and has its own pseudo-elements
+   for the track and the fill. */
+.bar {
+  appearance: none;
+  background: var(--surface-muted);
+  border: 0;
+  border-radius: var(--radius-full);
+  display: block;
+  height: var(--space-2);
+  overflow: hidden;
+  width: 100%;
+}
+
+.bar::-webkit-progress-bar {
+  background: var(--surface-muted);
+}
+
+.bar::-webkit-progress-value {
+  background: var(--brand);
+  border-radius: var(--radius-full);
+}
+
+.bar::-moz-progress-bar {
+  background: var(--brand);
+  border-radius: var(--radius-full);
+}
+
 .note {
   color: var(--text-muted);
   font-size: var(--text-sm);
