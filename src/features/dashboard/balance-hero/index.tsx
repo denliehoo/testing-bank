@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import { Button } from '@/components/button'
 import { formatMoney } from '@/lib/format'
 import styles from './index.module.css'
@@ -5,6 +6,9 @@ import styles from './index.module.css'
 interface BalanceHeroProps {
   total: number
   depositAccountCount: number
+  onNewTransfer: () => void
+  /** So the transfer dialog can give focus back to this button when it closes. */
+  newTransferRef?: RefObject<HTMLButtonElement | null>
 }
 
 export function PlusIcon() {
@@ -15,7 +19,12 @@ export function PlusIcon() {
   )
 }
 
-export function BalanceHero({ total, depositAccountCount }: BalanceHeroProps) {
+export function BalanceHero({
+  total,
+  depositAccountCount,
+  onNewTransfer,
+  newTransferRef,
+}: BalanceHeroProps) {
   return (
     <section className={styles.hero} aria-label="Total available">
       <div>
@@ -27,7 +36,11 @@ export function BalanceHero({ total, depositAccountCount }: BalanceHeroProps) {
         </p>
       </div>
       <div className={styles.cta}>
-        <Button className={styles.button}>
+        <Button
+          ref={newTransferRef}
+          className={styles.button}
+          onClick={onNewTransfer}
+        >
           <PlusIcon />
           New transfer
         </Button>

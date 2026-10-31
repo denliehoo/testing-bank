@@ -10,9 +10,26 @@ body,
   min-height: 100%;
 }
 
+/* Don't scroll the page behind an open modal dialog. */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 /* Keep the page width the same whether or not a scrollbar is showing. */
 html {
   scrollbar-gutter: stable;
+}
+
+/* The full-screen sheet below 1024px would leave the reserved gutter showing
+   as a strip beside it. The centred dialog above 1024px doesn't have that. */
+html:has(dialog[open]) {
+  scrollbar-gutter: auto;
+}
+
+@media (min-width: 1024px) {
+  html:has(dialog[open]) {
+    scrollbar-gutter: stable;
+  }
 }
 
 body {

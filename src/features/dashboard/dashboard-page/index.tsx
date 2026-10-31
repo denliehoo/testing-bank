@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { useState } from 'react'
+import type { ReactNode, RefObject } from 'react'
+import { useRef, useState } from 'react'
 import { InlineError } from '@/components/inline-error'
 import { Layout } from '@/components/layout'
 import { AccountList } from '@/features/dashboard/account-list'
@@ -9,6 +9,7 @@ import { DailyLimitCardSkeleton } from '@/features/dashboard/daily-limit-card/sk
 import { RecentTransactions } from '@/features/dashboard/recent-transactions'
 import { useDashboard } from '@/features/dashboard/use-dashboard'
 import type { DashboardData } from '@/features/dashboard/use-dashboard'
+import { TransferDialog } from '@/features/transfer/transfer-dialog'
 import { Header } from '@/features/shell/header'
 import { HeaderSkeleton } from '@/features/shell/header/skeleton'
 import { SegmentSwitch } from '@/features/shell/segment-switch'
@@ -28,12 +29,22 @@ function Greeting({ firstName }: { firstName: string }) {
   )
 }
 
-function DashboardContent({ data }: { data: DashboardData }) {
+function DashboardContent({
+  data,
+  onNewTransfer,
+  newTransferRef,
+}: {
+  data: DashboardData
+  onNewTransfer: () => void
+  newTransferRef: RefObject<HTMLButtonElement | null>
+}) {
   return (
     <>
       <BalanceHero
         total={data.totalAvailable}
         depositAccountCount={data.depositAccountCount}
+        onNewTransfer={onNewTransfer}
+        newTransferRef={newTransferRef}
       />
       <AccountList accounts={data.accounts} />
       <RecentTransactions transactions={data.transactions} />
@@ -44,6 +55,8 @@ function DashboardContent({ data }: { data: DashboardData }) {
 export function DashboardPage() {
   const { data, customer, isError, retry } = useDashboard()
   const [hadStoredSegment] = useState(hasStoredSegment)
+  const [isTransferOpen, setTransferOpen] = useState(false)
+  const newTransferRef = useRef<HTMLButtonElement>(null)
   useDefaultSegment(customer?.segment)
 
   // If the user hasn't chosen a segment yet, the API's default decides the
@@ -67,7 +80,13 @@ export function DashboardPage() {
     rail = undefined
   } else if (data) {
     intro = <Greeting firstName={data.customer.firstName} />
-    main = <DashboardContent data={data} />
+    main = (
+      <DashboardContent
+        data={data}
+        onNewTransfer={() => setTransferOpen(true)}
+        newTransferRef={newTransferRef}
+      />
+    )
     rail = (
       <div className={styles.rail}>
         <DailyLimitCard remaining={data.remainingDailyLimit} />
@@ -76,12 +95,19 @@ export function DashboardPage() {
   }
 
   return (
-    <Layout
-      header={awaitingSegment ? <HeaderSkeleton /> : <Header />}
-      intro={intro}
-      rail={rail}
-    >
-      <div className={styles.page}>{main}</div>
-    </Layout>
+    <>
+      <Layout
+        header={awaitingSegment ? <HeaderSkeleton /> : <Header />}
+        intro={intro}
+        rail={rail}
+      >
+        <div className={styles.page}>{main}</div>
+      </Layout>
+      <TransferDialog
+        open={isTransferOpen}
+        onClose={() => setTransferOpen(false)}
+        returnFocusTo={newTransferRef}
+      />
+    </>
   )
 }
