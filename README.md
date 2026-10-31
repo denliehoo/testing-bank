@@ -72,7 +72,7 @@ All three are built for the dashboard. Skeletons use the same CSS as the real co
 
 ## Tests
 
-`npm test`: 31 tests, rendering the real app against the mock API and asserting what the user sees.
+`npm test` renders the real app against the mock API and asserting what the user sees.
 
 - The three required ones: an amount over the balance shows the message and sends **no request** (a handler counts calls); a successful transfer shows `Transfer sent` and the dashboard shows the new balance, transaction and remaining limit; a failed dashboard request shows the error and `Retry` loads it.
 - A `#fail` transfer stays on review with an alert; an API rejection shows its reason.
