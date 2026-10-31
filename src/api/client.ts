@@ -24,11 +24,30 @@ export class ApiError extends Error {
   }
 }
 
+// Demo hooks from the API contract (`?scenario=error`, `?delay=1500`). When
+// they're on the page URL they're forwarded to API requests, so reviewers can
+// see the error, empty and loading states on the deployed site.
+const DEMO_PARAM = { Scenario: 'scenario', Delay: 'delay' } as const
+
+function withDemoParams(path: string): string {
+  const [pathname, query = ''] = path.split('?')
+  const params = new URLSearchParams(query)
+  const page = new URLSearchParams(window.location.search)
+
+  for (const name of Object.values(DEMO_PARAM)) {
+    const value = page.get(name)
+    if (value !== null) params.set(name, value)
+  }
+
+  const search = params.toString()
+  return search ? `${pathname}?${search}` : pathname
+}
+
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
-  const url = `${BASE_URL}${path.replace(/^\//, '')}`
+  const url = `${BASE_URL}${withDemoParams(path).replace(/^\//, '')}`
   const response = await fetch(url, init)
   const body = (await response.json().catch(() => null)) as
     | T

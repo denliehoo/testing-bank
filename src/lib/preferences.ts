@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { Segment } from '@/api/types'
 
 export const Theme = { Light: 'light', Dark: 'dark' } as const
@@ -30,6 +30,14 @@ function subscribeTo(attribute: string) {
 
 const subscribeToTheme = subscribeTo(ATTRIBUTE.Theme)
 const subscribeToSegment = subscribeTo(ATTRIBUTE.Segment)
+
+function readStored(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
 
 function remember(key: string, value: string) {
   try {
@@ -65,4 +73,17 @@ export function useSegment() {
   }
 
   return { segment, setSegment }
+}
+
+/**
+ * Applies the customer's default segment from the API, unless the user has
+ * already chosen one. Only sets the attribute; it isn't saved, so it can't
+ * override a later choice.
+ */
+export function useDefaultSegment(defaultSegment: Segment | undefined) {
+  useEffect(() => {
+    if (defaultSegment && readStored(STORAGE_KEY.Segment) === null) {
+      root.setAttribute(ATTRIBUTE.Segment, defaultSegment)
+    }
+  }, [defaultSegment])
 }
