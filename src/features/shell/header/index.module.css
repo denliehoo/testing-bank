@@ -1,0 +1,101 @@
+/* Mobile (< 1024px): brand on the left, theme toggle + avatar on the right.
+   The nav and the segment switch only appear in the header on desktop.
+   The height is fixed so the bar doesn't change size when they appear. */
+.header {
+  align-items: center;
+  display: grid;
+  gap: var(--space-4);
+  grid-template-areas: 'brand actions';
+  grid-template-columns: 1fr auto;
+  height: var(--header-height);
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  gap: var(--space-2);
+  grid-area: brand;
+}
+
+.mark {
+  align-items: center;
+  background: var(--brand);
+  border-radius: var(--radius-sm);
+  color: var(--on-brand);
+  display: flex;
+  height: var(--space-8);
+  justify-content: center;
+  width: var(--space-8);
+}
+
+.nav,
+.segment {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  align-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  display: flex;
+  font-weight: var(--weight-medium);
+  min-height: var(--tap-target);
+  padding: 0 var(--space-3);
+}
+
+.navItem[aria-current='page'] {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.navItem[aria-disabled='true'] {
+  color: var(--text-subtle);
+  cursor: not-allowed;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: var(--space-2);
+  grid-area: actions;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+  display: flex;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  height: var(--space-10);
+  justify-content: center;
+  width: var(--space-10);
+}
+
+@media (min-width: 1024px) {
+  .header {
+    grid-template-areas: 'brand nav segment actions';
+    grid-template-columns: auto 1fr auto auto;
+  }
+
+  .nav {
+    display: block;
+    grid-area: nav;
+  }
+
+  .segment {
+    display: block;
+    grid-area: segment;
+  }
+}

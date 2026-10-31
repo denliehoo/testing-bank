@@ -1,4 +1,5 @@
-export type Segment = 'retail' | 'premium'
+export const Segment = { Retail: 'retail', Premium: 'premium' } as const
+export type Segment = (typeof Segment)[keyof typeof Segment]
 export type AccountType = 'checking' | 'savings' | 'credit'
 export type TransactionDirection = 'in' | 'out'
 export type TransactionStatus = 'posted' | 'pending'

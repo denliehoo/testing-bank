@@ -25,10 +25,21 @@ Use Conventional Commits: `<type>: <summary>` in lowercase imperative, e.g. `fea
 - **Use `formatMoney` / `formatShortDate`** from `src/lib/format.ts`. Use the exact copy strings in brief §4.
 - **No console errors** when the app works normally.
 
+## Naming and constants
+
+- **Files and folders are kebab-case.** Exception: starter files (`App.tsx`, `main.tsx`) keep their names.
+- **A component is a folder:** `components/button/index.tsx` + `index.module.css` (+ `index.test.tsx`, helpers as needed). Import it as `.../components/button`.
+- **No magic strings.** Domain values (theme, segment, account type…), storage keys, attribute names and query keys are `as const` objects with a derived type, e.g. `export const Theme = { Light: 'light', Dark: 'dark' } as const` + `export type Theme = (typeof Theme)[keyof typeof Theme]`. Use `Theme.Dark`, never `'dark'`. Not a TS `enum`. UI copy, CSS class names and ARIA values are fine as literals.
+- **Every constant object is `as const`.** It's required when a type is derived from it, and gives `readonly` otherwise.
+- **Constants live next to the code that owns them.** Move one to a shared file only when two or more modules need it (e.g. query keys under `src/api/`). No catch-all `constants.ts`.
+- Use `Record<Union, …>` for per-value lookups (labels) so adding a value is a compile error until handled.
+- **Imports:** use the `@/` alias (maps to `src/`) for anything outside the current folder, e.g. `@/components/button`. Relative imports only for same-folder files (`./index.module.css`). The alias is declared in `tsconfig.json`, `vite.config.ts` and `vitest.config.ts`; keep them in sync.
+- **Breakpoints:** only the two the brief specifies (§5): `640px` and `1024px`. CSS can't read variables in media queries, so write the literal. Don't introduce others without discussing.
+
 ## Structure
 
 - `src/components/`: reusable, feature-agnostic UI (`Button`, `Skeleton`, `EmptyState`, `InlineError`, `SearchInput`, …). If a component knows nothing about banking or transfer data, it goes here.
-- `src/features/dashboard/`, `src/features/transfer/`: feature components, hooks, queries, schema.
+- `src/features/shell/`: app chrome (header, segment switch, theme toggle). `src/features/dashboard/`, `src/features/transfer/`: feature components, hooks, queries, schema.
 - `src/api/`: client, types, query functions. `src/lib/`: pure helpers.
 
 ## Style
