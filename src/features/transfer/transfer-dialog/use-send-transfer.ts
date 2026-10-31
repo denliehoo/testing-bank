@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ApiError } from '@/api/client'
 import { queryKeys } from '@/api/query-keys'
 import { sendTransfer } from '@/api/transfers'
 
@@ -22,4 +23,13 @@ export function useSendTransfer() {
         ),
       ),
   })
+}
+
+const SEND_ERROR =
+  "Something went wrong. Your money hasn't left your account. Try again."
+
+/** If the API rejected the request with a reason (400/422), say it. Anything
+ * else (server down, `#fail`) gets the standard copy. */
+export function sendErrorMessage(error: Error): string {
+  return error instanceof ApiError && error.fields ? error.message : SEND_ERROR
 }

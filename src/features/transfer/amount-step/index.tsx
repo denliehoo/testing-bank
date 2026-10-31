@@ -5,8 +5,8 @@ import { Button } from '@/components/button'
 import { Field } from '@/components/field'
 import { isDepositAccount, remainingDailyLimit } from '@/lib/balances'
 import { formatMoney } from '@/lib/format'
-import { NOTE_MAX_LENGTH } from '../schema'
-import type { TransferFormValues } from '../schema'
+import { NOTE_MAX_LENGTH } from '@/features/transfer/schema'
+import type { TransferFormValues } from '@/features/transfer/schema'
 import styles from './index.module.css'
 
 const QUICK_AMOUNTS = [50, 100, 250, 500]

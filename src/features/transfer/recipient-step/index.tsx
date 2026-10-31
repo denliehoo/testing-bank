@@ -8,8 +8,8 @@ import { InlineError } from '@/components/inline-error'
 import { SearchInput } from '@/components/search-input'
 import { Skeleton } from '@/components/skeleton'
 import { VisuallyHidden } from '@/components/visually-hidden'
-import { NEW_RECIPIENT } from '../schema'
-import type { TransferFormValues } from '../schema'
+import { NEW_RECIPIENT } from '@/features/transfer/schema'
+import type { TransferFormValues } from '@/features/transfer/schema'
 import styles from './index.module.css'
 
 // There's no banks endpoint and the brief only asks for "Bank (select)", so

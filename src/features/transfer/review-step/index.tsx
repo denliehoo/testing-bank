@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { useFormContext } from 'react-hook-form'
 import { accountsQuery, payeesQuery } from '@/api/queries'
 import { formatMoney } from '@/lib/format'
-import { resolveRecipient } from '../resolve-recipient'
-import { parseAmount } from '../schema'
-import type { TransferFormValues } from '../schema'
+import { resolveRecipient } from './resolve-recipient'
+import { parseAmount } from '@/features/transfer/schema'
+import type { TransferFormValues } from '@/features/transfer/schema'
 import styles from './index.module.css'
 
 const FEE = 0

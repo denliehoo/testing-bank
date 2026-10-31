@@ -1,77 +1,21 @@
 import { useId, useState } from 'react'
-import type { ReactNode, RefObject } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery } from '@tanstack/react-query'
-import { FormProvider, useForm } from 'react-hook-form'
-import { accountsQuery, customerQuery } from '@/api/queries'
-import { ApiError } from '@/api/client'
-import type { Account } from '@/api/types'
+import type { RefObject } from 'react'
+import { FormProvider } from 'react-hook-form'
 import { Button } from '@/components/button'
 import { Dialog } from '@/components/dialog'
 import { InlineError } from '@/components/inline-error'
 import { Stepper } from '@/components/stepper'
-import { isDepositAccount, remainingDailyLimit } from '@/lib/balances'
-import { AmountStep } from '../amount-step'
-import { RecipientStep } from '../recipient-step'
-import { ReviewStep } from '../review-step'
-import { createTransferSchema } from '../schema'
-import type { TransferFormValues } from '../schema'
-import { SuccessPanel } from '../success-panel'
-import { toTransferRequest } from '../transfer-request'
-import { useSendTransfer } from '../use-send-transfer'
+import { STEPS } from './steps'
+import { SuccessPanel } from '@/features/transfer/success-panel'
+import { toTransferRequest } from './transfer-request'
+import { sendErrorMessage, useSendTransfer } from './use-send-transfer'
+import { useTransferForm } from './use-transfer-form'
+import type { TransferFormValues } from '@/features/transfer/schema'
 import styles from './index.module.css'
-
-const SEND_ERROR =
-  "Something went wrong. Your money hasn't left your account. Try again."
-
-// `fields` are the form fields each step owns: Continue validates just those.
-const STEPS: {
-  label: string
-  title: string
-  fields: (keyof TransferFormValues)[]
-  Content: () => ReactNode
-}[] = [
-  {
-    label: 'Recipient',
-    title: 'Who are you sending to?',
-    fields: ['payeeId', 'name', 'accountNumber', 'bank'],
-    Content: RecipientStep,
-  },
-  {
-    label: 'Amount',
-    title: 'How much?',
-    fields: ['fromAccountId', 'amount', 'note'],
-    Content: AmountStep,
-  },
-  {
-    label: 'Review',
-    title: 'Check the details',
-    fields: [],
-    Content: ReviewStep,
-  },
-]
-
-function emptyValues(accounts: Account[]): TransferFormValues {
-  return {
-    payeeId: '',
-    name: '',
-    accountNumber: '',
-    bank: '',
-    fromAccountId: accounts.find(isDepositAccount)?.id ?? '',
-    amount: '',
-    note: '',
-  }
-}
 
 function submitLabel(isLast: boolean, isSending: boolean): string {
   if (!isLast) return 'Continue'
   return isSending ? 'Sending…' : 'Confirm transfer'
-}
-
-/** If the API rejected the request with a reason (400/422), say it. Anything
- * else (server down, `#fail`) gets the standard copy. */
-function sendErrorMessage(error: Error): string {
-  return error instanceof ApiError && error.fields ? error.message : SEND_ERROR
 }
 
 interface TransferDialogProps {
@@ -94,20 +38,7 @@ function TransferFlow({
   // back to the button that opened it.
   const [isOpen, setOpen] = useState(true)
   const [stepIndex, setStepIndex] = useState(0)
-  const accounts = useQuery(accountsQuery).data ?? []
-  const customer = useQuery(customerQuery).data
-
-  const schema = createTransferSchema({
-    accounts,
-    remainingLimit: customer ? remainingDailyLimit(customer) : 0,
-  })
-  const form = useForm<TransferFormValues>({
-    resolver: zodResolver(schema),
-    // Check a field when the user leaves it, then keep checking as they fix it.
-    mode: 'onTouched',
-    defaultValues: emptyValues(accounts),
-  })
-
+  const { form, resetForm } = useTransferForm()
   const sendMutation = useSendTransfer()
   const step = STEPS[stepIndex]
   const isFirst = stepIndex === 0
@@ -123,7 +54,7 @@ function TransferFlow({
   }
 
   function startAnother() {
-    form.reset(emptyValues(accounts))
+    resetForm()
     goToStep(0)
   }
 

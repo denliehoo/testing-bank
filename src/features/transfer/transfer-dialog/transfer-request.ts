@@ -1,6 +1,6 @@
 import type { CreateTransferRequest } from '@/api/types'
-import { NEW_RECIPIENT, parseAmount } from './schema'
-import type { TransferFormValues } from './schema'
+import { NEW_RECIPIENT, parseAmount } from '@/features/transfer/schema'
+import type { TransferFormValues } from '@/features/transfer/schema'
 
 /** Turns validated form values into the API's request: a saved payee is sent
  * by id, someone new by their details, never both. */

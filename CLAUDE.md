@@ -43,6 +43,7 @@ Use Conventional Commits: `<type>: <summary>` in lowercase imperative, e.g. `fea
 
 - `src/components/`: reusable, feature-agnostic UI (`Button`, `Skeleton`, `EmptyState`, `InlineError`, `SearchInput`, …). If a component knows nothing about banking or transfer data, it goes here.
 - `src/features/shell/`: app chrome (header, segment switch, theme toggle). `src/features/dashboard/`, `src/features/transfer/`: feature components, hooks, queries, schema.
+- **Co-locate by use.** A helper, hook or constant used by one component lives in that component's folder (`transfer-dialog/use-send-transfer.ts`). If several components of a feature use it, it goes at the feature root (`transfer/schema.ts`). If several features use it, it goes in `src/lib/` or `src/components/`.
 - `src/api/`: client, types, query functions. `src/lib/`: pure helpers.
 
 ## Style

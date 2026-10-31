@@ -1,6 +1,6 @@
 import type { Payee, TransferRecipient } from '@/api/types'
-import { NEW_RECIPIENT } from './schema'
-import type { TransferFormValues } from './schema'
+import { NEW_RECIPIENT } from '@/features/transfer/schema'
+import type { TransferFormValues } from '@/features/transfer/schema'
 
 /** Who the money goes to, in the shape the review and success screens show.
  * A saved payee already has a masked number; a new recipient's is built from
