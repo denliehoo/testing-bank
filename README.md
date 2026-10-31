@@ -105,9 +105,10 @@ Examples of things I rejected or fixed:
 - With `?scenario=empty` there are no accounts, so a transfer can't be completed from that state.
 - A failure in any one of the three dashboard requests hides the whole dashboard. Isolating the transactions panel (inline error + Retry) would be a small change.
 - The greeting is always `Good evening, Ava`. I noticed that this is odd at other times of day, but the brief says to use it as written and that it doesn't need to change with the time of day, so I followed it (which is also why I left out the optional date line, which would sit awkwardly under it). In production I'd choose the greeting from the user's local time.
+- Refreshing or closing the tab while the transfer dialog is open loses what was typed, with no warning. The brief's `Discard this transfer?` confirmation covers closing the dialog, so I didn't add a `beforeunload` guard: the browser's prompt can't use the brief's copy, it also fires on deliberate reloads, and nothing is at stake (the form starts empty every time). If drafts survived a refresh, I'd offer to restore or discard them instead.
 - Cards, Payments and Insights are intentionally disabled (out of scope). No favicon asset was supplied, so the page uses an empty icon to avoid a 404 in the console.
 
 **Optional items from the brief**
 
-- Done: `Make another transfer` on the success screen (marked optional in the wireframe), and one end-to-end test.
-- Not done: the daily-limit progress bar, the `Discard this transfer?` confirmation, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, a CI workflow (`npm run check` and `npm run build` on pull requests) and the optional date line under the greeting. I put my time into the required flows, tests and states instead.
+- Done: `Make another transfer` on the success screen (marked optional in the wireframe), one end-to-end test, and the `Discard this transfer?` confirmation: Cancel, ✕ and Esc ask first once anything has been changed, and close straight away on an untouched form. Esc or ✕ on the question means `Keep editing`.
+- Not done: the daily-limit progress bar, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, a CI workflow (`npm run check` and `npm run build` on pull requests) and the optional date line under the greeting. I put my time into the required flows, tests and states instead.

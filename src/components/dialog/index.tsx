@@ -14,6 +14,10 @@ interface DialogProps {
   footer?: ReactNode
   /** Stops the user closing it (✕ and Esc), e.g. while something is sending. */
   closeDisabled?: boolean
+  /** Takes over ✕ and Esc: they ask this instead of closing, and the owner
+   * closes it (by setting `open` to false) if it agrees. For a "discard
+   * changes?" check. */
+  onCloseRequest?: () => void
   /** Where focus goes when the dialog closes. Browsers restore it to the
    * element focused before opening, but Safari doesn't focus a button when
    * it's clicked, so the opener is given explicitly. */
@@ -30,6 +34,7 @@ export function Dialog({
   subheader,
   footer,
   closeDisabled = false,
+  onCloseRequest,
   returnFocusTo,
   children,
 }: DialogProps) {
@@ -58,7 +63,11 @@ export function Dialog({
       aria-labelledby={titleId}
       onClose={handleClose}
       // Esc fires `cancel` first; stopping it keeps the dialog open.
-      onCancel={(event) => closeDisabled && event.preventDefault()}
+      onCancel={(event) => {
+        if (!closeDisabled && !onCloseRequest) return
+        event.preventDefault()
+        if (!closeDisabled) onCloseRequest?.()
+      }}
     >
       {open && (
         <>
@@ -71,7 +80,7 @@ export function Dialog({
                 variant="ghost"
                 aria-label="Close"
                 disabled={closeDisabled}
-                onClick={() => dialogRef.current?.close()}
+                onClick={onCloseRequest ?? (() => dialogRef.current?.close())}
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
                   <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

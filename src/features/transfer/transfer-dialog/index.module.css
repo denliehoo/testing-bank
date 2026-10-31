@@ -8,3 +8,17 @@
   font-weight: var(--weight-semibold);
   margin: 0;
 }
+
+/* The question sits in the middle of the fixed-height dialog. */
+.confirm {
+  align-content: center;
+  display: grid;
+  height: 100%;
+  text-align: center;
+}
+
+.confirmTitle {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}

@@ -156,4 +156,37 @@ describe('transfer dialog', () => {
       within(dialog).getByRole('heading', { name: 'Check the details' }),
     ).toBeInTheDocument()
   })
+  it('closes an untouched dialog without asking', async () => {
+    const { user } = await renderDashboard()
+    const dialog = await openTransferDialog(user)
+
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('asks before discarding changes, and keeps them on Keep editing', async () => {
+    const { user } = await renderDashboard()
+    const dialog = await openTransferDialog(user)
+    await user.click(await within(dialog).findByRole('radio', { name: /Jamie Tan/ }))
+
+    await user.click(within(dialog).getByRole('button', { name: 'Close' }))
+    expect(
+      within(dialog).getByRole('heading', { name: 'Discard this transfer?' }),
+    ).toBeInTheDocument()
+
+    await user.click(within(dialog).getByRole('button', { name: 'Keep editing' }))
+    expect(within(dialog).getByRole('radio', { name: /Jamie Tan/ })).toBeChecked()
+  })
+
+  it('closes on Discard', async () => {
+    const { user } = await renderDashboard()
+    const dialog = await openTransferDialog(user)
+    await user.click(await within(dialog).findByRole('radio', { name: /Jamie Tan/ }))
+
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Discard' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
 })

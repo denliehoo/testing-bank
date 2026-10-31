@@ -37,6 +37,8 @@ function TransferFlow({
   // Closing through the dialog (rather than unmounting it) is what hands focus
   // back to the button that opened it.
   const [isOpen, setOpen] = useState(true)
+  // Asking whether to throw away what's been typed (see `requestClose`).
+  const [confirmingDiscard, setConfirmingDiscard] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
   const { form, resetForm } = useTransferForm()
   const sendMutation = useSendTransfer()
@@ -45,12 +47,21 @@ function TransferFlow({
   const isLast = stepIndex === STEPS.length - 1
   const isSending = sendMutation.isPending
   const sent = sendMutation.data?.transfer
+  const { isDirty } = form.formState
 
   // The send error belongs to the attempt that made it, so moving to another
   // step clears it.
   function goToStep(index: number) {
     sendMutation.reset()
     setStepIndex(index)
+  }
+
+  // Every way of closing (Cancel, ✕, Esc) comes here. A form with changes asks
+  // first; asking again (✕ or Esc on the question) means keep editing.
+  function requestClose() {
+    if (confirmingDiscard) setConfirmingDiscard(false)
+    else if (isDirty && !sent) setConfirmingDiscard(true)
+    else setOpen(false)
   }
 
   function startAnother() {
@@ -71,6 +82,34 @@ function TransferFlow({
 
   const sendError = sendMutation.error && sendErrorMessage(sendMutation.error)
 
+  function renderFooter() {
+    if (confirmingDiscard) {
+      return (
+        <>
+          <Button variant="secondary" autoFocus onClick={() => setConfirmingDiscard(false)}>
+            Keep editing
+          </Button>
+          <Button onClick={() => setOpen(false)}>Discard</Button>
+        </>
+      )
+    }
+    if (sent) return undefined
+    return (
+      <>
+        <Button
+          variant="secondary"
+          disabled={isSending}
+          onClick={isFirst ? requestClose : () => goToStep(stepIndex - 1)}
+        >
+          {isFirst ? 'Cancel' : 'Back'}
+        </Button>
+        <Button type="submit" form={formId} disabled={isSending}>
+          {submitLabel(isLast, isSending)}
+        </Button>
+      </>
+    )
+  }
+
   return (
     <Dialog
       open={isOpen}
@@ -78,31 +117,23 @@ function TransferFlow({
       title="New transfer"
       returnFocusTo={returnFocusTo}
       closeDisabled={isSending}
+      onCloseRequest={requestClose}
       subheader={
-        sent ? undefined : (
+        sent || confirmingDiscard ? undefined : (
           <Stepper steps={STEPS.map((s) => s.label)} currentIndex={stepIndex} />
         )
       }
-      footer={
-        sent ? undefined : (
-          <>
-            <Button
-              variant="secondary"
-              disabled={isSending}
-              onClick={isFirst ? () => setOpen(false) : () => goToStep(stepIndex - 1)}
-            >
-              {isFirst ? 'Cancel' : 'Back'}
-            </Button>
-            <Button type="submit" form={formId} disabled={isSending}>
-              {submitLabel(isLast, isSending)}
-            </Button>
-          </>
-        )
-      }
+      footer={renderFooter()}
     >
       {/* Not one ternary with the form: this region has to stay in the page,
           empty, so that what later appears in it is announced. */}
-      <div aria-live="polite">
+      <div
+        aria-live="polite"
+        className={confirmingDiscard ? styles.confirm : undefined}
+      >
+        {confirmingDiscard && (
+          <h3 className={styles.confirmTitle}>Discard this transfer?</h3>
+        )}
         {sent && (
           <SuccessPanel
             transfer={sent}
@@ -111,7 +142,7 @@ function TransferFlow({
           />
         )}
       </div>
-      {!sent && (
+      {!sent && !confirmingDiscard && (
         <FormProvider {...form}>
           <form
             id={formId}
