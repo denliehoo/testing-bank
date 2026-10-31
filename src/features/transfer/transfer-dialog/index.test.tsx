@@ -177,6 +177,8 @@ describe('transfer dialog', () => {
 
     await user.click(within(dialog).getByRole('button', { name: 'Keep editing' }))
     expect(within(dialog).getByRole('radio', { name: /Jamie Tan/ })).toBeChecked()
+    // The button that had focus went away with the question.
+    expect(within(dialog).getByRole('button', { name: 'Continue' })).toHaveFocus()
   })
 
   it('closes on Discard', async () => {

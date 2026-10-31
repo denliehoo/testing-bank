@@ -1,22 +1,14 @@
-import { useId, useState } from 'react'
+import { useId, useRef } from 'react'
 import type { RefObject } from 'react'
-import { FormProvider } from 'react-hook-form'
-import { Button } from '@/components/button'
 import { Dialog } from '@/components/dialog'
-import { InlineError } from '@/components/inline-error'
 import { Stepper } from '@/components/stepper'
-import { STEPS } from './steps'
 import { SuccessPanel } from '@/features/transfer/success-panel'
-import { toTransferRequest } from './transfer-request'
-import { sendErrorMessage, useSendTransfer } from './use-send-transfer'
-import { useTransferForm } from './use-transfer-form'
-import type { TransferFormValues } from '@/features/transfer/schema'
+import { STEPS } from './steps'
+import { TransferForm } from './transfer-form'
+import { DiscardFooter, StepFooter } from './transfer-footer'
+import { useCloseGuard } from './use-close-guard'
+import { useTransferFlow } from './use-transfer-flow'
 import styles from './index.module.css'
-
-function submitLabel(isLast: boolean, isSending: boolean): string {
-  if (!isLast) return 'Continue'
-  return isSending ? 'Sending…' : 'Confirm transfer'
-}
 
 interface TransferDialogProps {
   open: boolean
@@ -34,93 +26,45 @@ function TransferFlow({
   returnFocusTo,
 }: Omit<TransferDialogProps, 'open'>) {
   const formId = useId()
-  // Closing through the dialog (rather than unmounting it) is what hands focus
-  // back to the button that opened it.
-  const [isOpen, setOpen] = useState(true)
-  // Asking whether to throw away what's been typed (see `requestClose`).
-  const [confirmingDiscard, setConfirmingDiscard] = useState(false)
-  const [stepIndex, setStepIndex] = useState(0)
-  const { form, resetForm } = useTransferForm()
-  const sendMutation = useSendTransfer()
-  const step = STEPS[stepIndex]
-  const isFirst = stepIndex === 0
-  const isLast = stepIndex === STEPS.length - 1
-  const isSending = sendMutation.isPending
-  const sent = sendMutation.data?.transfer
-  const { isDirty } = form.formState
-
-  // The send error belongs to the attempt that made it, so moving to another
-  // step clears it.
-  function goToStep(index: number) {
-    sendMutation.reset()
-    setStepIndex(index)
-  }
-
-  // Every way of closing (Cancel, ✕, Esc) comes here. A form with changes asks
-  // first; asking again (✕ or Esc on the question) means keep editing.
-  function requestClose() {
-    if (confirmingDiscard) setConfirmingDiscard(false)
-    else if (isDirty && !sent) setConfirmingDiscard(true)
-    else setOpen(false)
-  }
-
-  function startAnother() {
-    resetForm()
-    goToStep(0)
-  }
-
-  async function handleContinue() {
-    const valid = await form.trigger(step.fields, { shouldFocus: true })
-    if (valid) goToStep(stepIndex + 1)
-  }
-
-  function send(values: TransferFormValues) {
-    // The button is disabled while sending; this covers Enter as well.
-    if (isSending) return
-    sendMutation.mutate(toTransferRequest(values))
-  }
-
-  const sendError = sendMutation.error && sendErrorMessage(sendMutation.error)
+  const flow = useTransferFlow()
+  const submitRef = useRef<HTMLButtonElement>(null)
+  const guard = useCloseGuard(flow.hasChanges, submitRef)
+  const { sent } = flow
 
   function renderFooter() {
-    if (confirmingDiscard) {
+    if (guard.confirmingDiscard) {
       return (
-        <>
-          <Button variant="secondary" autoFocus onClick={() => setConfirmingDiscard(false)}>
-            Keep editing
-          </Button>
-          <Button onClick={() => setOpen(false)}>Discard</Button>
-        </>
+        <DiscardFooter onKeepEditing={guard.keepEditing} onDiscard={guard.close} />
       )
     }
     if (sent) return undefined
     return (
-      <>
-        <Button
-          variant="secondary"
-          disabled={isSending}
-          onClick={isFirst ? requestClose : () => goToStep(stepIndex - 1)}
-        >
-          {isFirst ? 'Cancel' : 'Back'}
-        </Button>
-        <Button type="submit" form={formId} disabled={isSending}>
-          {submitLabel(isLast, isSending)}
-        </Button>
-      </>
+      <StepFooter
+        formId={formId}
+        isFirst={flow.isFirst}
+        isLast={flow.isLast}
+        isSending={flow.isSending}
+        submitRef={submitRef}
+        onBack={flow.goBack}
+        onCancel={guard.requestClose}
+      />
     )
   }
 
   return (
     <Dialog
-      open={isOpen}
+      open={guard.isOpen}
       onClose={onClose}
       title="New transfer"
       returnFocusTo={returnFocusTo}
-      closeDisabled={isSending}
-      onCloseRequest={requestClose}
+      closeDisabled={flow.isSending}
+      onCloseRequest={guard.requestClose}
       subheader={
-        sent || confirmingDiscard ? undefined : (
-          <Stepper steps={STEPS.map((s) => s.label)} currentIndex={stepIndex} />
+        sent || guard.confirmingDiscard ? undefined : (
+          <Stepper
+            steps={STEPS.map((s) => s.label)}
+            currentIndex={flow.stepIndex}
+          />
         )
       }
       footer={renderFooter()}
@@ -129,36 +73,27 @@ function TransferFlow({
           empty, so that what later appears in it is announced. */}
       <div
         aria-live="polite"
-        className={confirmingDiscard ? styles.confirm : undefined}
+        className={guard.confirmingDiscard ? styles.confirm : undefined}
       >
-        {confirmingDiscard && (
+        {guard.confirmingDiscard && (
           <h3 className={styles.confirmTitle}>Discard this transfer?</h3>
         )}
         {sent && (
           <SuccessPanel
             transfer={sent}
-            onDone={() => setOpen(false)}
-            onAnother={startAnother}
+            onDone={guard.close}
+            onAnother={flow.startAnother}
           />
         )}
       </div>
-      {!sent && !confirmingDiscard && (
-        <FormProvider {...form}>
-          <form
-            id={formId}
-            noValidate
-            className={styles.form}
-            onSubmit={(event) => {
-              event.preventDefault()
-              if (isLast) void form.handleSubmit(send)()
-              else void handleContinue()
-            }}
-          >
-            <h3 className={styles.title}>{step.title}</h3>
-            {sendError && <InlineError message={sendError} />}
-            <step.Content />
-          </form>
-        </FormProvider>
+      {!sent && !guard.confirmingDiscard && (
+        <TransferForm
+          id={formId}
+          form={flow.form}
+          step={flow.step}
+          sendError={flow.sendError}
+          onSubmit={flow.submitStep}
+        />
       )}
     </Dialog>
   )

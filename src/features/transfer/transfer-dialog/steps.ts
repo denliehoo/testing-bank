@@ -4,13 +4,15 @@ import { RecipientStep } from '@/features/transfer/recipient-step'
 import { ReviewStep } from '@/features/transfer/review-step'
 import type { TransferFormValues } from '@/features/transfer/schema'
 
-// `fields` are the form fields each step owns: Continue validates just those.
-export const STEPS: {
+export interface Step {
   label: string
   title: string
+  /** The form fields the step owns: Continue validates just those. */
   fields: (keyof TransferFormValues)[]
   Content: () => ReactNode
-}[] = [
+}
+
+export const STEPS: Step[] = [
   {
     label: 'Recipient',
     title: 'Who are you sending to?',
