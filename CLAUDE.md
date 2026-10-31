@@ -12,7 +12,9 @@ Run `npm run check` before proposing any commit.
 
 Use Conventional Commits: `<type>: <summary>` in lowercase imperative, e.g. `feat: add dashboard transaction list`, `fix: keep amount on back`, `chore: add project conventions`. Common types: `feat`, `fix`, `chore`, `test`, `docs`, `refactor`, `style`, `ci`. Don't commit without the owner's review.
 
-`main` is protected: no direct pushes. Work on a branch (`feat/...`, `fix/...`), push it, open a pull request with `gh pr create`, and merge when both CI jobs are green. Merging deploys.
+`main` is protected: no direct pushes. Work on a branch (`feat/...`, `fix/...`) and merge through a pull request once both CI jobs are green. Merging deploys.
+
+Don't open a pull request, or merge one, until the owner has reviewed the branch and says to. Then `gh pr create` (or the link `git push` prints, if `gh` isn't available).
 
 ## Hard rules
 
