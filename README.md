@@ -2,9 +2,9 @@
 
 - Deployed: https://testing-bank-rosy.vercel.app/
 - Run locally: `npm install && npm run dev`
-- Checks: `npm run check` (lint, typecheck, tests) · `npm run build`
+- Checks: `npm run check` (lint, typecheck, tests) · `npm run build` · `npm run test:e2e` (one-off setup: `npx playwright install chromium`)
 
-A single-page banking dashboard with a three-step transfer dialog. React 19, TypeScript (strict), Vite, TanStack Query, React Hook Form + Zod, MSW, Vitest. **No dependencies were added** to the starter.
+A single-page banking dashboard with a three-step transfer dialog. React 19, TypeScript (strict), Vite, TanStack Query, React Hook Form + Zod, MSW, Vitest. The only dependency added to the starter is `@playwright/test` (dev), for the one end-to-end test.
 
 ## Project structure
 
@@ -19,6 +19,7 @@ src/
     dashboard/    page, balance hero, accounts, recent transactions, daily limit, useDashboard
     transfer/     schema.ts (every validation rule), the three steps, success panel,
                   transfer-dialog/ (the form, step list, send mutation, request mapping)
+  e2e/            Playwright test of the main flow, run against the production build
   test/           test setup, MSW server, shared helpers, <dialog> stand-in for jsdom
 public/theme-init.js   sets the theme and segment before the first paint
 ```
@@ -79,7 +80,9 @@ All three are built for the dashboard. Skeletons use the same CSS as the real co
 - A table-driven test of the schema (empty/invalid/too many decimals/below minimum/over balance/over limit, 8-digit account number, name and note length).
 - Search (by description and category, including a match older than the eight rows first shown, the count, and no results), theme and segment switching (including that they're remembered), and using the payee list from the keyboard. These cover required behaviour that is easy to break unnoticed.
 
-I checked that the tests can fail: removing the balance rule or the invalidation makes the relevant ones fail. Not covered: dialog focus handling (jsdom has no real `<dialog>`; I checked it by hand in Chrome) and visual checks such as contrast and the theme flash. I didn't add end-to-end tests since that needs a new dependency.
+I checked that the tests can fail: removing the balance rule or the invalidation makes the relevant ones fail. Not covered: dialog focus handling (jsdom has no real `<dialog>`; I checked it by hand in Chrome) and visual checks such as contrast and the theme flash. 
+
+**End-to-end.** `npm run test:e2e` builds the app, serves it with `vite preview` and runs a single happy-path test in Chromium: open the dashboard, send SGD 120 to Jamie Tan through the three steps, check the success screen and reference, and check that the balance, the new transaction and the remaining limit have updated, with no console errors. The mock API runs in the service worker exactly as on the deployed site, so it exercises the real build. I kept it to one test on purpose: the Vitest tests cover the cases and the edge cases, and this one only needs to prove the whole thing is wired together. Playwright is the one added dependency (dev only); it isn't part of `npm run check` because it needs a browser download.
 
 ## AI use
 
@@ -101,9 +104,10 @@ Examples of things I rejected or fixed:
 - While search results load, the transaction list is dimmed to 40% opacity, which is below AA contrast for that moment (like a disabled control); it returns to full contrast when the results arrive.
 - With `?scenario=empty` there are no accounts, so a transfer can't be completed from that state.
 - A failure in any one of the three dashboard requests hides the whole dashboard. Isolating the transactions panel (inline error + Retry) would be a small change.
+- The greeting is always `Good evening, Ava`. I noticed that this is odd at other times of day, but the brief says to use it as written and that it doesn't need to change with the time of day, so I followed it (which is also why I left out the optional date line, which would sit awkwardly under it). In production I'd choose the greeting from the user's local time.
 - Cards, Payments and Insights are intentionally disabled (out of scope). No favicon asset was supplied, so the page uses an empty icon to avoid a 404 in the console.
 
 **Optional items from the brief**
 
-- Done: `Make another transfer` on the success screen (marked optional in the wireframe).
-- Not done: the daily-limit progress bar, the `Discard this transfer?` confirmation, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, an end-to-end test (it needs a new dependency such as Playwright), a CI workflow (`npm run check` and `npm run build` on pull requests), and the optional date line under the greeting. I put my time into the required flows, tests and states instead.
+- Done: `Make another transfer` on the success screen (marked optional in the wireframe), and one end-to-end test.
+- Not done: the daily-limit progress bar, the `Discard this transfer?` confirmation, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, a CI workflow (`npm run check` and `npm run build` on pull requests) and the optional date line under the greeting. I put my time into the required flows, tests and states instead.

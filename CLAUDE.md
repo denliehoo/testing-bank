@@ -4,7 +4,7 @@ Spec lives in `brief/candidate-brief.md` (read it first), `brief/api-contract.md
 
 ## Commands
 
-`npm run dev` · `npm test` · `npm run lint` · `npm run typecheck` · `npm run check` (lint + typecheck + tests) · `npm run build`
+`npm run dev` · `npm test` · `npm run lint` · `npm run typecheck` · `npm run check` (lint + typecheck + tests) · `npm run build` · `npm run test:e2e` (Playwright, one happy-path test against the production build; needs `npx playwright install chromium` once)
 
 Run `npm run check` before proposing any commit.
 
