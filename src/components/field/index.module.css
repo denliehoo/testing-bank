@@ -1,0 +1,61 @@
+.field {
+  display: grid;
+  gap: var(--space-2);
+  /* Lets a long value shrink instead of widening the dialog. */
+  min-width: 0;
+}
+
+.labelRow {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.label {
+  font-weight: var(--weight-medium);
+}
+
+.aside,
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.hint,
+.error {
+  margin: 0;
+}
+
+.error {
+  color: var(--negative);
+  font-size: var(--text-sm);
+}
+
+/* The control is whatever the caller renders inside: an input or a select. */
+.field :where(input, select) {
+  appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  min-height: var(--tap-target);
+  min-width: 0;
+  padding: 0 var(--space-3);
+  width: 100%;
+}
+
+.field :where(select) {
+  /* `appearance: none` removes the arrow; draw one with the text colour. */
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 14px) 50%;
+  background-repeat: no-repeat;
+  background-size: 6px 6px;
+  padding-right: var(--space-8);
+}
+
+.field :where(input, select)[aria-invalid='true'] {
+  border-color: var(--negative);
+}

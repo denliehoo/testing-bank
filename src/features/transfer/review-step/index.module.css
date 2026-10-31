@@ -1,0 +1,42 @@
+.step {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.rows {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+}
+
+.row dt {
+  color: var(--text-muted);
+  flex: none;
+}
+
+.row dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.total {
+  border-top: 1px solid var(--border);
+  font-weight: var(--weight-semibold);
+  padding-top: var(--space-3);
+}
+
+.eta {
+  background: var(--surface-muted);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  margin: 0;
+  padding: var(--space-3);
+}

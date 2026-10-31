@@ -65,9 +65,10 @@
 
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
-    /* Not `auto`: a fixed-position box with top and bottom set would stretch
-       to fill the screen. */
-    height: fit-content;
+    /* A fixed height, so the dialog doesn't change size from step to step;
+       the body scrolls if a step is taller. (Not `auto`: a fixed-position box
+       with top and bottom set would stretch to fill the screen.) */
+    height: 40rem;
     margin: auto;
     max-height: calc(100dvh - 2 * var(--space-8));
     width: 32.5rem;

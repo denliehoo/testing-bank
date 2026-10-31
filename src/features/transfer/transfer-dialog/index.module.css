@@ -1,0 +1,10 @@
+.form {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}

@@ -4,6 +4,7 @@ import { queryKeys } from './query-keys'
 import type {
   AccountsResponse,
   CustomerResponse,
+  PayeesResponse,
   TransactionsResponse,
 } from './types'
 
@@ -30,3 +31,9 @@ export function transactionsQuery(limit: number) {
         .transactions,
   })
 }
+
+export const payeesQuery = queryOptions({
+  queryKey: queryKeys.payees,
+  queryFn: async () =>
+    (await apiFetch<PayeesResponse>('/api/payees')).payees,
+})

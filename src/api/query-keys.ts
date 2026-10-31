@@ -5,4 +5,5 @@ export const queryKeys = {
   customer: ['customer'],
   accounts: ['accounts'],
   transactions: ['transactions'],
+  payees: ['payees'],
 } as const
