@@ -110,5 +110,5 @@ Examples of things I rejected or fixed:
 
 **Optional items from the brief**
 
-- Done: `Make another transfer` on the success screen (marked optional in the wireframe), one end-to-end test, and the `Discard this transfer?` confirmation: Cancel, ✕ and Esc ask first once anything has been changed, and close straight away on an untouched form. Esc or ✕ on the question means `Keep editing`.
-- Not done: the daily-limit progress bar, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, a CI workflow (`npm run check` and `npm run build` on pull requests) and the optional date line under the greeting. I put my time into the required flows, tests and states instead.
+- Done: `Make another transfer` on the success screen (marked optional in the wireframe), one end-to-end test, a GitHub Actions workflow (`.github/workflows/ci.yml`: lint, typecheck, unit tests and build in one job, the end-to-end test in another, on pushes to `main` and on pull requests), and the `Discard this transfer?` confirmation: Cancel, ✕ and Esc ask first once anything has been changed, and close straight away on an untouched form. Esc or ✕ on the question means `Keep editing`.
+- Not done: the daily-limit progress bar, a debug menu for the error/empty states (the hooks work from the URL, see above), a balance-hide toggle, a third segment, a `#transfer` deep link, and the optional date line under the greeting. I put my time into the required flows, tests and states instead.
