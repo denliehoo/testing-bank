@@ -101,6 +101,25 @@ describe('dashboard', () => {
     expect(screen.getByText('Grab')).toBeInTheDocument()
   })
 
+  it("doesn't claim there are no matches for a shorter search", async () => {
+    const { user } = await renderDashboard()
+    const search = screen.getByRole('searchbox', { name: 'Search transactions' })
+
+    await user.type(search, 'qwe')
+    expect(
+      await screen.findByText('No transactions match your search.'),
+    ).toBeInTheDocument()
+
+    // `q` is a different search: the empty result for `qwe` must not show.
+    await user.clear(search)
+    await user.type(search, 'q')
+    expect(
+      screen.queryByText('No transactions match your search.'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('Spotify')).toBeInTheDocument()
+    expect(await screen.findByText('1 result')).toBeInTheDocument()
+  })
+
   it('shows an error when a request fails, and Retry loads it', async () => {
     server.use(
       http.get(

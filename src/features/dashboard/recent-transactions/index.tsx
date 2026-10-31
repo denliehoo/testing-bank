@@ -21,13 +21,13 @@ function resultsLabel(total: number, shown: number): string {
   return `${total} ${total === 1 ? 'result' : 'results'}`
 }
 
-/** Whether results found for `resultsTerm` still make sense while `typed` is
- * in the box: true while the user adds or deletes characters of one search,
- * false once it's a different search (e.g. cleared, then a new word). */
-function isSameSearch(resultsTerm: string, typed: string): boolean {
-  const a = resultsTerm.toLowerCase()
-  const b = typed.toLowerCase()
-  return a.startsWith(b) || b.startsWith(a)
+/** Whether results found for `resultsTerm` can stand in while `typed` loads.
+ * They can when `typed` extends them (`g` then `gr`): everything matching the
+ * longer text also matches the shorter, so the rows are a superset, and an
+ * empty result stays empty. Results for a longer or different text can't: they
+ * could be missing rows, or claim "no matches" for something that has some. */
+function isUsableWhileLoading(resultsTerm: string, typed: string): boolean {
+  return typed.toLowerCase().startsWith(resultsTerm.toLowerCase())
 }
 
 export function RecentTransactions({
@@ -39,9 +39,9 @@ export function RecentTransactions({
   // Only the search text is state. Searching asks the API (`q`) for the latest
   // matches, so older transactions can be found too; the panel still lists at
   // most as many rows as the recent list. The request waits until typing
-  // pauses, and the previous results stay up (dimmed) while the next ones
-  // load, but only if they belong to the same search: they're dropped when the
-  // box is cleared and something else is typed.
+  // pauses, and while the next results load the previous ones stay up
+  // (dimmed) if they can stand in for them (see `isUsableWhileLoading`);
+  // otherwise the recent list shows, dimmed, until they arrive.
   const [query, setQuery] = useState('')
   const searching = query.trim() !== ''
   const term = useDebouncedValue(query.trim(), SEARCH_DELAY_MS)
@@ -53,7 +53,7 @@ export function RecentTransactions({
   // Until the first results arrive the recent list stays as it is.
   const text = query.trim()
   const results =
-    searching && search.data && isSameSearch(search.data.term, text)
+    searching && search.data && isUsableWhileLoading(search.data.term, text)
       ? search.data
       : undefined
   const matches = results?.transactions ?? transactions
