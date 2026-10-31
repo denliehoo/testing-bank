@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@/App'
 import { formatMoney } from '@/lib/format'
@@ -17,6 +17,15 @@ export function renderApp() {
     </QueryClientProvider>,
   )
   return { user }
+}
+
+/** The app, once the dashboard has loaded. While it loads there's a disabled
+ * placeholder `New transfer` button, so tests that click things wait for the
+ * greeting first. */
+export async function renderDashboard() {
+  const app = renderApp()
+  await screen.findByRole('heading', { name: /Good evening/ })
+  return app
 }
 
 /** `formatMoney` puts a non-breaking space after "SGD"; Testing Library turns

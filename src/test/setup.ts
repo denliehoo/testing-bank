@@ -15,6 +15,10 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 beforeEach(() => resetMockDb())
 afterEach(() => {
   cleanup()
+  // Theme and segment live on <html> and in localStorage, outside React.
+  document.documentElement.removeAttribute('data-theme')
+  document.documentElement.removeAttribute('data-segment')
+  localStorage.clear()
   server.resetHandlers()
 })
 afterAll(() => server.close())
