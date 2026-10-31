@@ -12,6 +12,8 @@ interface DialogProps {
   /** Shown under the title (e.g. a stepper). */
   subheader?: ReactNode
   footer?: ReactNode
+  /** Stops the user closing it (✕ and Esc), e.g. while something is sending. */
+  closeDisabled?: boolean
   /** Where focus goes when the dialog closes. Browsers restore it to the
    * element focused before opening, but Safari doesn't focus a button when
    * it's clicked, so the opener is given explicitly. */
@@ -27,6 +29,7 @@ export function Dialog({
   title,
   subheader,
   footer,
+  closeDisabled = false,
   returnFocusTo,
   children,
 }: DialogProps) {
@@ -54,6 +57,8 @@ export function Dialog({
       className={styles.dialog}
       aria-labelledby={titleId}
       onClose={handleClose}
+      // Esc fires `cancel` first; stopping it keeps the dialog open.
+      onCancel={(event) => closeDisabled && event.preventDefault()}
     >
       {open && (
         <>
@@ -65,6 +70,7 @@ export function Dialog({
               <Button
                 variant="ghost"
                 aria-label="Close"
+                disabled={closeDisabled}
                 onClick={() => dialogRef.current?.close()}
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
