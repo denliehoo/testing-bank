@@ -1,0 +1,50 @@
+.section {
+  /* Every row is at least this tall, so the list height is predictable. */
+  --row-height: 4.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(0, 1fr);
+  padding: var(--space-4);
+}
+
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.heading {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.search {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+  min-width: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.centered {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}

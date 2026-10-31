@@ -1,0 +1,74 @@
+.root {
+  position: relative;
+  width: 100%;
+}
+
+.icon {
+  color: var(--text-subtle);
+  left: var(--space-3);
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input {
+  appearance: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  min-height: var(--tap-target);
+  /* An input's default minimum width would stop it shrinking with its card. */
+  min-width: 0;
+  padding: 0 var(--space-3) 0 var(--space-10);
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+.withClear {
+  padding-right: var(--tap-target);
+}
+
+.withClearAndHint {
+  padding-right: calc(var(--tap-target) + 5rem);
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  pointer-events: none;
+  position: absolute;
+  right: var(--tap-target);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+/* We render our own clear button. */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.clear {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  height: var(--tap-target);
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: var(--tap-target);
+}
+
+.clear:hover {
+  background: var(--surface-muted);
+}

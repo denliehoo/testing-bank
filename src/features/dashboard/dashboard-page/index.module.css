@@ -1,0 +1,39 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  /* A bare `auto` column grows to fit its widest content (e.g. long text),
+     which would push the page wider than the screen. */
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.greeting {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+
+.segment {
+  justify-self: start;
+}
+
+/* Below 1024px the rail is the last thing on the page, so leave room for the
+   fixed "New transfer" bar to sit under it. */
+.rail {
+  padding-bottom: calc(var(--space-12) + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+  .segment {
+    display: none;
+  }
+
+  .rail {
+    padding-bottom: 0;
+  }
+}

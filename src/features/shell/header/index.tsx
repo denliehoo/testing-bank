@@ -1,3 +1,4 @@
+import { Avatar } from '@/features/shell/avatar'
 import { SegmentSwitch } from '@/features/shell/segment-switch'
 import { ThemeToggle } from '@/features/shell/theme-toggle'
 import styles from './index.module.css'
@@ -38,9 +39,7 @@ export function Header() {
 
       <div className={styles.actions}>
         <ThemeToggle />
-        <span className={styles.avatar} role="img" aria-label="Ava Chen">
-          AC
-        </span>
+        <Avatar />
       </div>
     </div>
   )

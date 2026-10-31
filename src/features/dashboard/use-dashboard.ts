@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { accountsQuery, customerQuery, transactionsQuery } from '@/api/queries'
-import { remainingDailyLimit, totalAvailable } from '@/lib/balances'
+import {
+  isDepositAccount,
+  remainingDailyLimit,
+  totalAvailable,
+} from '@/lib/balances'
 
 export const DASHBOARD_TRANSACTION_LIMIT = 8
 
@@ -19,7 +23,9 @@ export function useDashboard() {
   const transactions = useQuery(transactionsQuery(DASHBOARD_TRANSACTION_LIMIT))
 
   const queries = [customer, accounts, transactions]
-  const isError = queries.some((query) => query.isError)
+  // While Retry is refetching, the query is no longer in error, so the page
+  // goes back to its loading state instead of sitting on a stale error.
+  const isError = queries.some((query) => query.isError && !query.isFetching)
 
   function retry() {
     for (const query of queries) {
@@ -34,9 +40,14 @@ export function useDashboard() {
           accounts: accounts.data,
           transactions: transactions.data,
           totalAvailable: totalAvailable(accounts.data),
+          depositAccountCount: accounts.data.filter(isDepositAccount).length,
           remainingDailyLimit: remainingDailyLimit(customer.data),
         }
       : undefined
 
-  return { data, isError, retry }
+  // `customer` is exposed on its own because the page needs it earlier than
+  // the rest (to know the default segment before showing anything coloured).
+  return { data, customer: customer.data, isError, retry }
 }
+
+export type DashboardData = NonNullable<ReturnType<typeof useDashboard>['data']>

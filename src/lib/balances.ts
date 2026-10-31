@@ -1,4 +1,3 @@
-import { AccountType } from '@/api/types'
 import type { Account, Customer } from '@/api/types'
 
 // Money is a float with 2 decimals; round after arithmetic so sums and
@@ -8,7 +7,7 @@ const roundMoney = (amount: number) =>
 
 /** Checking and savings. The credit card is money owed, not money available. */
 export function isDepositAccount(account: Account): boolean {
-  return account.type !== AccountType.Credit
+  return account.type !== 'credit'
 }
 
 export function totalAvailable(accounts: Account[]): number {

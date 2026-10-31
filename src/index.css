@@ -10,6 +10,11 @@ body,
   min-height: 100%;
 }
 
+/* Keep the page width the same whether or not a scrollbar is showing. */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -17,6 +22,11 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
+}
+
+h1,
+h2 {
+  margin: 0;
 }
 
 button,

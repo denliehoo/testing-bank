@@ -1,8 +1,7 @@
-import { useEffect, useSyncExternalStore } from 'react'
-import { Segment } from '@/api/types'
+import { useLayoutEffect, useSyncExternalStore } from 'react'
+import type { Segment } from '@/api/types'
 
-export const Theme = { Light: 'light', Dark: 'dark' } as const
-export type Theme = (typeof Theme)[keyof typeof Theme]
+export type Theme = 'light' | 'dark'
 
 // public/theme-init.js reads the same keys and sets the same attributes
 // before first paint. Keep the two in sync.
@@ -49,7 +48,7 @@ function remember(key: string, value: string) {
 
 export function useTheme() {
   const theme = useSyncExternalStore<Theme>(subscribeToTheme, () =>
-    root.getAttribute(ATTRIBUTE.Theme) === Theme.Dark ? Theme.Dark : Theme.Light,
+    root.getAttribute(ATTRIBUTE.Theme) === 'dark' ? 'dark' : 'light',
   )
 
   function setTheme(next: Theme) {
@@ -62,9 +61,7 @@ export function useTheme() {
 
 export function useSegment() {
   const segment = useSyncExternalStore<Segment>(subscribeToSegment, () =>
-    root.getAttribute(ATTRIBUTE.Segment) === Segment.Premium
-      ? Segment.Premium
-      : Segment.Retail,
+    root.getAttribute(ATTRIBUTE.Segment) === 'premium' ? 'premium' : 'retail',
   )
 
   function setSegment(next: Segment) {
@@ -75,14 +72,19 @@ export function useSegment() {
   return { segment, setSegment }
 }
 
+export function hasStoredSegment(): boolean {
+  return readStored(STORAGE_KEY.Segment) !== null
+}
+
 /**
  * Applies the customer's default segment from the API, unless the user has
  * already chosen one. Only sets the attribute; it isn't saved, so it can't
- * override a later choice.
+ * override a later choice. A layout effect so it lands before the browser
+ * paints the data that triggered it (no one-frame flash of the old colour).
  */
 export function useDefaultSegment(defaultSegment: Segment | undefined) {
-  useEffect(() => {
-    if (defaultSegment && readStored(STORAGE_KEY.Segment) === null) {
+  useLayoutEffect(() => {
+    if (defaultSegment && !hasStoredSegment()) {
       root.setAttribute(ATTRIBUTE.Segment, defaultSegment)
     }
   }, [defaultSegment])

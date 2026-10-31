@@ -29,10 +29,13 @@ Use Conventional Commits: `<type>: <summary>` in lowercase imperative, e.g. `fea
 
 - **Files and folders are kebab-case.** Exception: starter files (`App.tsx`, `main.tsx`) keep their names.
 - **A component is a folder:** `components/button/index.tsx` + `index.module.css` (+ `index.test.tsx`, helpers as needed). Import it as `.../components/button`.
-- **No magic strings.** Domain values (theme, segment, account type…), storage keys, attribute names and query keys are `as const` objects with a derived type, e.g. `export const Theme = { Light: 'light', Dark: 'dark' } as const` + `export type Theme = (typeof Theme)[keyof typeof Theme]`. Use `Theme.Dark`, never `'dark'`. Not a TS `enum`. UI copy, CSS class names and ARIA values are fine as literals.
-- **Every constant object is `as const`.** It's required when a type is derived from it, and gives `readonly` otherwise.
+- **Strings: closed value sets are unions, keys and identifiers are constants.**
+  - A closed set of values (theme, segment, account type, direction, status) is a string-literal union type, e.g. `type Theme = 'light' | 'dark'`. Compare with the literal; the compiler rejects a typo. The starter's API types (`src/api/types.ts`) already work this way. Don't rewrite them.
+  - An identifier or key the compiler can't check (storage keys, `data-*` attribute names, query keys, demo param names) is an `as const` object in one place, e.g. `STORAGE_KEY.Theme`, never retyped. Not a TS `enum`.
+  - UI copy, CSS class names and ARIA values are fine as literals.
+- **Every constant object is `as const`** (gives `readonly` and literal types).
 - **Constants live next to the code that owns them.** Move one to a shared file only when two or more modules need it (e.g. query keys under `src/api/`). No catch-all `constants.ts`.
-- Use `Record<Union, …>` for per-value lookups (labels) so adding a value is a compile error until handled.
+- Use `Record<Union, …>` for per-value lookups (labels) where it fits, so adding a value is a compile error until handled.
 - **Imports:** use the `@/` alias (maps to `src/`) for anything outside the current folder, e.g. `@/components/button`. Relative imports only for same-folder files (`./index.module.css`). The alias is declared in `tsconfig.json`, `vite.config.ts` and `vitest.config.ts`; keep them in sync.
 - **Breakpoints:** only the two the brief specifies (§5): `640px` and `1024px`. CSS can't read variables in media queries, so write the literal. Don't introduce others without discussing.
 

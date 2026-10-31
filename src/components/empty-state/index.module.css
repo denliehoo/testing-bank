@@ -1,0 +1,13 @@
+.root {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.message {
+  color: var(--text-muted);
+  margin: 0;
+}

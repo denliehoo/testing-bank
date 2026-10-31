@@ -1,9 +1,9 @@
 import { Button } from '@/components/button'
-import { Theme, useTheme } from '@/lib/preferences'
+import { useTheme } from '@/lib/preferences'
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
-  const isDark = theme === Theme.Dark
+  const isDark = theme === 'dark'
 
   // The label stays fixed; aria-pressed carries the on/off state.
   return (
@@ -11,7 +11,7 @@ export function ThemeToggle() {
       variant="ghost"
       aria-label="Dark mode"
       aria-pressed={isDark}
-      onClick={() => setTheme(isDark ? Theme.Light : Theme.Dark)}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
       <svg
         viewBox="0 0 24 24"

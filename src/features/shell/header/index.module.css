@@ -70,19 +70,6 @@
   grid-area: actions;
 }
 
-.avatar {
-  align-items: center;
-  background: var(--brand-soft);
-  border-radius: var(--radius-full);
-  color: var(--brand);
-  display: flex;
-  font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
-  height: var(--space-10);
-  justify-content: center;
-  width: var(--space-10);
-}
-
 @media (min-width: 1024px) {
   .header {
     grid-template-areas: 'brand nav segment actions';

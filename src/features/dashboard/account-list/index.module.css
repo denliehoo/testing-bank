@@ -1,0 +1,55 @@
+.section {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.heading {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+/* As many columns as fit, so stacked on mobile and 3-up on desktop without a
+   breakpoint. */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+}
+
+.name {
+  font-weight: var(--weight-semibold);
+}
+
+.number {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance {
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-bold);
+  margin-top: var(--space-2);
+}
+
+.due {
+  color: var(--negative);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}

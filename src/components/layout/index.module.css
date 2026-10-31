@@ -1,8 +1,9 @@
-/* Content is at most var(--container) wide; the gutters sit outside of it. */
+/* Content is at most var(--container) wide; the gutters sit outside of it.
+   Horizontal padding only, so it can't undo .content's vertical padding. */
 .container {
   margin: 0 auto;
   max-width: calc(var(--container) + 2 * var(--gutter));
-  padding: 0 var(--gutter-mobile);
+  padding-inline: var(--gutter-mobile);
   width: 100%;
 }
 
@@ -17,9 +18,13 @@
 .content {
   display: grid;
   gap: var(--space-6);
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-6);
   grid-template-columns: minmax(0, 1fr);
-  padding-bottom: var(--space-8);
-  padding-top: var(--space-6);
 }
 
 .main {
@@ -28,7 +33,7 @@
 
 @media (min-width: 1024px) {
   .container {
-    padding: 0 var(--gutter);
+    padding-inline: var(--gutter);
   }
 
   .withRail {
