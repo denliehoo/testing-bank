@@ -37,3 +37,21 @@ export const payeesQuery = queryOptions({
   queryFn: async () =>
     (await apiFetch<PayeesResponse>('/api/payees')).payees,
 })
+
+/** Transactions matching `q` (description or category), newest first. Unlike
+ * `transactionsQuery` this keeps the envelope: `total` is how many matched,
+ * which can be more than the `limit` rows returned. `term` records which
+ * search the rows belong to, so the screen can tell whether leftover results
+ * are still relevant to what's typed. It shares the `transactions` key prefix,
+ * so a transfer's invalidation covers it too. */
+export function transactionSearchQuery(limit: number, q: string) {
+  return queryOptions({
+    queryKey: [...queryKeys.transactions, { limit, q }],
+    queryFn: async () => ({
+      ...(await apiFetch<TransactionsResponse>(
+        `/api/transactions?limit=${limit}&q=${encodeURIComponent(q)}`,
+      )),
+      term: q,
+    }),
+  })
+}

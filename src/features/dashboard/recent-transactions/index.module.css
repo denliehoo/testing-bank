@@ -48,3 +48,9 @@
   min-width: 0;
   padding: 0;
 }
+
+/* Search results are on their way: dim what's listed, without moving it. */
+.pending {
+  opacity: 0.4;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}

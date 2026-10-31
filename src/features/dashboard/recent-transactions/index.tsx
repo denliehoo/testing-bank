@@ -1,16 +1,33 @@
 import { useId, useState } from 'react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { transactionSearchQuery } from '@/api/queries'
 import type { Transaction } from '@/api/types'
 import { Button } from '@/components/button'
 import { EmptyState } from '@/components/empty-state'
+import { InlineError } from '@/components/inline-error'
 import { SearchInput } from '@/components/search-input'
 import { TransactionItem } from '@/features/dashboard/transaction-item'
+import { DASHBOARD_TRANSACTION_LIMIT } from '@/features/dashboard/use-dashboard'
+import { useDebouncedValue } from '@/lib/use-debounced-value'
 import styles from './index.module.css'
 
-function matchesSearch(transaction: Transaction, needle: string) {
-  return (
-    transaction.description.toLowerCase().includes(needle) ||
-    transaction.category.toLowerCase().includes(needle)
-  )
+const SEARCH_DELAY_MS = 300
+
+/** `shown` rows out of `total` matches. The list is capped, so when more
+ * matched than are shown the count says so (`8+`) instead of claiming a
+ * number that doesn't match the rows. */
+function resultsLabel(total: number, shown: number): string {
+  if (total > shown) return `${shown}+ results`
+  return `${total} ${total === 1 ? 'result' : 'results'}`
+}
+
+/** Whether results found for `resultsTerm` still make sense while `typed` is
+ * in the box: true while the user adds or deletes characters of one search,
+ * false once it's a different search (e.g. cleared, then a new word). */
+function isSameSearch(resultsTerm: string, typed: string): boolean {
+  const a = resultsTerm.toLowerCase()
+  const b = typed.toLowerCase()
+  return a.startsWith(b) || b.startsWith(a)
 }
 
 export function RecentTransactions({
@@ -19,16 +36,42 @@ export function RecentTransactions({
   transactions: Transaction[]
 }) {
   const headingId = useId()
-  // Only the search text is state. The filtered list and the count are derived.
-  // The search covers the transactions listed here (the most recent ones).
+  // Only the search text is state. Searching asks the API (`q`) for the latest
+  // matches, so older transactions can be found too; the panel still lists at
+  // most as many rows as the recent list. The request waits until typing
+  // pauses, and the previous results stay up (dimmed) while the next ones
+  // load, but only if they belong to the same search: they're dropped when the
+  // box is cleared and something else is typed.
   const [query, setQuery] = useState('')
-  const needle = query.trim().toLowerCase()
-  const matches = needle
-    ? transactions.filter((transaction) => matchesSearch(transaction, needle))
-    : transactions
+  const searching = query.trim() !== ''
+  const term = useDebouncedValue(query.trim(), SEARCH_DELAY_MS)
+  const search = useQuery({
+    ...transactionSearchQuery(DASHBOARD_TRANSACTION_LIMIT, term),
+    enabled: term !== '',
+    placeholderData: keepPreviousData,
+  })
+  // Until the first results arrive the recent list stays as it is.
+  const text = query.trim()
+  const results =
+    searching && search.data && isSameSearch(search.data.term, text)
+      ? search.data
+      : undefined
+  const matches = results?.transactions ?? transactions
+  const total = results?.total ?? 0
+  // Typing hasn't paused yet, or the request is on its way: what's listed is
+  // about to change.
+  const isPending = searching && (term !== text || search.isFetching)
 
   function renderBody() {
-    if (transactions.length === 0) {
+    if (searching && search.isError) {
+      return (
+        <InlineError
+          message="We couldn't search your transactions."
+          onRetry={() => void search.refetch()}
+        />
+      )
+    }
+    if (transactions.length === 0 && !searching) {
       return (
         <div className={styles.centered}>
           <EmptyState message="No transactions yet." />
@@ -68,11 +111,7 @@ export function RecentTransactions({
           <SearchInput
             label="Search transactions"
             placeholder="Search transactions"
-            hint={
-              needle
-                ? `${matches.length} ${matches.length === 1 ? 'result' : 'results'}`
-                : ''
-            }
+            hint={results ? resultsLabel(total, results.transactions.length) : ''}
             value={query}
             onChange={setQuery}
           />
@@ -81,7 +120,8 @@ export function RecentTransactions({
       {/* Keeps the height of the unfiltered list, so a search with fewer
           results doesn't make the page below it jump. */}
       <div
-        className={styles.body}
+        className={`${styles.body} ${isPending ? styles.pending : ''}`}
+        aria-busy={isPending}
         style={{ minHeight: `calc(${transactions.length} * var(--row-height))` }}
       >
         {renderBody()}
