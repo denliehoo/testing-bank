@@ -5,7 +5,7 @@ import styles from './index.module.css'
 
 export function BalanceHeroSkeleton() {
   return (
-    <section className={styles.hero}>
+    <section className={`${styles.hero} ${styles.loading}`}>
       <div>
         <p className={styles.label}>
           <Skeleton width="8rem" />

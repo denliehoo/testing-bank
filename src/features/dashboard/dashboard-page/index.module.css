@@ -22,6 +22,15 @@
   justify-self: start;
 }
 
+/* From 640px there's room for the switch on the greeting's row. */
+@media (min-width: 640px) {
+  .greeting {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 /* Below 1024px the rail is the last thing on the page, so leave room for the
    fixed "New transfer" bar to sit under it. */
 .rail {

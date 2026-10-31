@@ -1,17 +1,30 @@
 .hero {
   align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+  /* Without this the gradient starts inside the border and repeats under it,
+     which showed as a bright line down the left edge. */
+  background-origin: border-box;
+  /* Transparent, not none: the placeholder has a visible border, and the two
+     must be the same height. */
+  border: 1px solid transparent;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  color: var(--on-hero);
   display: flex;
   gap: var(--space-4);
   justify-content: space-between;
   padding: var(--space-6);
 }
 
+/* The placeholder is neutral: the gradient follows the segment, which isn't
+   known until the customer has loaded. */
+.loading {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
 .label {
-  color: var(--text-muted);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   letter-spacing: 0.04em;
@@ -29,7 +42,6 @@
 }
 
 .caption {
-  color: var(--text-muted);
   font-size: var(--text-sm);
   margin: 0;
 }
@@ -64,5 +76,16 @@
 
   .button {
     width: auto;
+  }
+
+  /* On the gradient the brand-coloured button would blend into it (and its
+     focus ring too), so it's inverted. The extra selectors beat the button's
+     own hover and active colours. */
+  .hero:not(.loading) .button,
+  .hero:not(.loading) .button:hover:not(:disabled),
+  .hero:not(.loading) .button:active:not(:disabled) {
+    background: var(--on-hero);
+    color: var(--hero-from);
+    outline-color: var(--on-hero);
   }
 }
