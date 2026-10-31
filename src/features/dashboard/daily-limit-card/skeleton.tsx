@@ -12,6 +12,7 @@ export function DailyLimitCardSkeleton() {
           <Skeleton width="12rem" />
         </span>
       </p>
+      <Skeleton height="var(--space-2)" />
       <p className={styles.note}>
         <Skeleton width="14rem" />
       </p>

@@ -89,7 +89,10 @@ export function DashboardPage() {
     )
     rail = (
       <div className={styles.rail}>
-        <DailyLimitCard remaining={data.remainingDailyLimit} />
+        <DailyLimitCard
+          limit={data.customer.dailyTransferLimit}
+          remaining={data.remainingDailyLimit}
+        />
       </div>
     )
   }
