@@ -19,8 +19,8 @@ src/
     dashboard/    page, balance hero, accounts, recent transactions, daily limit, useDashboard
     transfer/     schema.ts (every validation rule), the three steps, success panel,
                   transfer-dialog/ (the form, step list, send mutation, request mapping)
-  e2e/            Playwright test of the main flow, run against the production build
   test/           test setup, MSW server, shared helpers, <dialog> stand-in for jsdom
+e2e/                   Playwright test of the main flow, run against the production build
 public/theme-init.js   sets the theme and segment before the first paint
 ```
 
