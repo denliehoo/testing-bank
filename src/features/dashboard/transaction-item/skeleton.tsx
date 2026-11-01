@@ -6,15 +6,15 @@ export function TransactionItemSkeleton() {
     <li className={styles.row}>
       <div className={styles.details}>
         <span className={styles.description}>
-          <Skeleton width="10rem" />
+          <Skeleton className={styles.skeletonDescription} />
         </span>
         <span className={styles.meta}>
-          <Skeleton width="7rem" />
+          <Skeleton className={styles.skeletonMeta} />
         </span>
       </div>
       <div className={styles.side}>
         <span className={styles.amount}>
-          <Skeleton width="5rem" />
+          <Skeleton className={styles.skeletonAmount} />
         </span>
       </div>
     </li>

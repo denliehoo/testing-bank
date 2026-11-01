@@ -86,3 +86,25 @@
     grid-area: segment;
   }
 }
+
+/* Loading placeholders, the same sizes as the logo mark, the name, the theme
+   button and the avatar. */
+.skeletonMark {
+  height: var(--space-8);
+  width: var(--space-8);
+}
+
+.skeletonName {
+  height: var(--space-5);
+  width: 6rem;
+}
+
+.skeletonTheme {
+  height: var(--tap-target);
+  width: var(--tap-target);
+}
+
+.skeletonAvatar {
+  height: var(--space-10);
+  width: var(--space-10);
+}

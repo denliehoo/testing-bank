@@ -1,3 +1,12 @@
+/* Defaults: the line height of the text it replaces, so swapping text for a
+   skeleton doesn't change the layout, and the full width. `:where` gives them
+   no specificity, so a size set by any class of the component using it wins,
+   whatever order the stylesheets load in. */
+:where(.root) {
+  height: 1lh;
+  width: 100%;
+}
+
 .root {
   animation: shimmer 1.4s linear infinite;
   background: linear-gradient(

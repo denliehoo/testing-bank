@@ -5,24 +5,24 @@ export function AccountListSkeleton() {
   return (
     <section className={styles.section}>
       <h2 className={styles.heading}>
-        <Skeleton width="6rem" />
+        <Skeleton className={styles.skeletonHeading} />
       </h2>
       <ul className={styles.grid}>
         {[0, 1, 2].map((key) => (
           <li key={key} className={styles.card}>
             <span className={styles.name}>
-              <Skeleton width="8rem" />
+              <Skeleton className={styles.skeletonName} />
             </span>
             <span className={styles.number}>
-              <Skeleton width="5rem" />
+              <Skeleton className={styles.skeletonNumber} />
             </span>
             <span className={styles.balance}>
-              <Skeleton width="9rem" />
+              <Skeleton className={styles.skeletonBalance} />
             </span>
             {/* The real credit card has an extra "Amount due" line. */}
             {key === 2 && (
               <span className={styles.due}>
-                <Skeleton width="5rem" />
+                <Skeleton className={styles.skeletonDue} />
               </span>
             )}
           </li>

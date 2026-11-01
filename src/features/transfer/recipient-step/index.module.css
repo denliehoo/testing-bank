@@ -79,3 +79,8 @@
   display: grid;
   gap: var(--space-4);
 }
+
+/* About the height of one payee row (a two-line label and an avatar). */
+.skeletonOption {
+  height: calc(var(--space-16) + var(--space-2));
+}

@@ -5,16 +5,16 @@ export function DailyLimitCardSkeleton() {
   return (
     <section className={styles.card}>
       <h2 className={styles.heading}>
-        <Skeleton width="6rem" />
+        <Skeleton className={styles.skeletonHeading} />
       </h2>
       <p className={styles.remaining}>
         <span className={styles.amount}>
-          <Skeleton width="12rem" />
+          <Skeleton className={styles.skeletonAmount} />
         </span>
       </p>
-      <Skeleton height="var(--space-2)" />
+      <Skeleton className={styles.skeletonBar} />
       <p className={styles.note}>
-        <Skeleton width="14rem" />
+        <Skeleton className={styles.skeletonNote} />
       </p>
     </section>
   )

@@ -46,3 +46,13 @@
     padding-bottom: 0;
   }
 }
+
+/* The segment switch: a tap target plus its padding. */
+.skeletonSegment {
+  height: calc(var(--tap-target) + var(--space-2));
+  width: 12rem;
+}
+
+.skeletonTitle {
+  width: 16rem;
+}

@@ -68,3 +68,15 @@
   font-weight: var(--weight-semibold);
   padding: 0 var(--space-2);
 }
+
+.skeletonDescription {
+  width: 10rem;
+}
+
+.skeletonMeta {
+  width: 7rem;
+}
+
+.skeletonAmount {
+  width: 5rem;
+}

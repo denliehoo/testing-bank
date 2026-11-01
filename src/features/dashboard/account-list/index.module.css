@@ -53,3 +53,23 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
 }
+
+.skeletonHeading {
+  width: 6rem;
+}
+
+.skeletonName {
+  width: 8rem;
+}
+
+.skeletonNumber {
+  width: 5rem;
+}
+
+.skeletonBalance {
+  width: 9rem;
+}
+
+.skeletonDue {
+  width: 5rem;
+}

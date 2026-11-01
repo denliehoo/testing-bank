@@ -9,13 +9,10 @@ export function GreetingSkeleton() {
   return (
     <div className={styles.greeting}>
       <h1 className={styles.title}>
-        <Skeleton width="16rem" />
+        <Skeleton className={styles.skeletonTitle} />
       </h1>
       <div className={styles.segment}>
-        <Skeleton
-          width="12rem"
-          height="calc(var(--tap-target) + var(--space-2))"
-        />
+        <Skeleton className={styles.skeletonSegment} />
       </div>
     </div>
   )

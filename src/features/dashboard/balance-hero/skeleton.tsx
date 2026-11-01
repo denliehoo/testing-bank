@@ -8,13 +8,13 @@ export function BalanceHeroSkeleton() {
     <section className={`${styles.hero} ${styles.loading}`}>
       <div>
         <p className={styles.label}>
-          <Skeleton width="8rem" />
+          <Skeleton className={styles.skeletonLabel} />
         </p>
         <p className={styles.total}>
-          <Skeleton width="14rem" />
+          <Skeleton className={styles.skeletonTotal} />
         </p>
         <p className={styles.caption}>
-          <Skeleton width="10rem" />
+          <Skeleton className={styles.skeletonCaption} />
         </p>
       </div>
       <div className={styles.cta}>

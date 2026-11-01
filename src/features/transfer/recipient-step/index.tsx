@@ -56,7 +56,7 @@ export function RecipientStep() {
           <VisuallyHidden>Recipient</VisuallyHidden>
         </legend>
 
-        {payees.isPending && <Skeleton height="4.5rem" />}
+        {payees.isPending && <Skeleton className={styles.skeletonOption} />}
         {payees.data?.length === 0 && (
           <EmptyState message="You don't have any saved payees yet." />
         )}

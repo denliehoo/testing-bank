@@ -6,12 +6,12 @@ export function HeaderSkeleton() {
   return (
     <div className={styles.header}>
       <div className={styles.brand}>
-        <Skeleton width="var(--space-8)" height="var(--space-8)" />
-        <Skeleton width="6rem" height="1.25rem" />
+        <Skeleton className={styles.skeletonMark} />
+        <Skeleton className={styles.skeletonName} />
       </div>
       <div className={styles.actions}>
-        <Skeleton width="var(--tap-target)" height="var(--tap-target)" />
-        <Skeleton width="var(--space-10)" height="var(--space-10)" />
+        <Skeleton className={styles.skeletonTheme} />
+        <Skeleton className={styles.skeletonAvatar} />
       </div>
     </div>
   )

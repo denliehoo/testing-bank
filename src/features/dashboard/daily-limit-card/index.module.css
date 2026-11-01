@@ -6,6 +6,9 @@
   display: grid;
   gap: var(--space-2);
   padding: var(--space-4);
+
+  /* Written once: the bar and its loading placeholder must be the same height. */
+  --bar-height: var(--space-2);
 }
 
 .heading {
@@ -36,7 +39,7 @@
   border: 0;
   border-radius: var(--radius-full);
   display: block;
-  height: var(--space-2);
+  height: var(--bar-height);
   overflow: hidden;
   width: 100%;
 }
@@ -55,8 +58,24 @@
   border-radius: var(--radius-full);
 }
 
+.skeletonBar {
+  height: var(--bar-height);
+}
+
 .note {
   color: var(--text-muted);
   font-size: var(--text-sm);
   margin: 0;
+}
+
+.skeletonHeading {
+  width: 6rem;
+}
+
+.skeletonAmount {
+  width: 12rem;
+}
+
+.skeletonNote {
+  width: 14rem;
 }

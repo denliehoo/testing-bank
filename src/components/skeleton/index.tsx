@@ -1,12 +1,17 @@
 import styles from './index.module.css'
 
 interface SkeletonProps {
-  width?: string
-  /** Defaults to the line height of the element it sits in, so swapping
-   * text for a skeleton doesn't change the layout. */
-  height?: string
+  /** Set `width` and `height` in a class of the component the skeleton stands
+   * in for, next to the rules of the real element. Without one it is a
+   * full-width line of text height. */
+  className?: string
 }
 
-export function Skeleton({ width = '100%', height = '1lh' }: SkeletonProps) {
-  return <span aria-hidden="true" className={styles.root} style={{ width, height }} />
+export function Skeleton({ className }: SkeletonProps) {
+  return (
+    <span
+      aria-hidden="true"
+      className={className ? `${styles.root} ${className}` : styles.root}
+    />
+  )
 }

@@ -10,10 +10,10 @@ export function RecentTransactionsSkeleton() {
     <section className={styles.section}>
       <div className={styles.header}>
         <h2 className={styles.heading}>
-          <Skeleton width="11rem" />
+          <Skeleton className={styles.skeletonHeading} />
         </h2>
         <div className={styles.search}>
-          <Skeleton height="var(--tap-target)" />
+          <Skeleton className={styles.skeletonSearch} />
         </div>
       </div>
       <div className={styles.body}>

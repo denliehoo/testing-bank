@@ -54,3 +54,12 @@
   opacity: 0.4;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
+
+/* The search box is at least a tap target tall. */
+.skeletonSearch {
+  height: var(--tap-target);
+}
+
+.skeletonHeading {
+  width: 11rem;
+}

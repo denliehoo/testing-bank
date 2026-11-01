@@ -89,3 +89,15 @@
     outline-color: var(--on-hero);
   }
 }
+
+.skeletonLabel {
+  width: 8rem;
+}
+
+.skeletonTotal {
+  width: 14rem;
+}
+
+.skeletonCaption {
+  width: 10rem;
+}
