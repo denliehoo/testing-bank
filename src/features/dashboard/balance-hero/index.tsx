@@ -39,6 +39,8 @@ export function BalanceHero({
         <Button
           ref={newTransferRef}
           className={styles.button}
+          // Nothing to send from: the dialog would have an empty account list.
+          disabled={depositAccountCount === 0}
           onClick={onNewTransfer}
         >
           <PlusIcon />

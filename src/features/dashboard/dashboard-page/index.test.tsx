@@ -120,6 +120,16 @@ describe('dashboard', () => {
     expect(await screen.findByText('1 result')).toBeInTheDocument()
   })
 
+  it("can't start a transfer when there is no account to send from", async () => {
+    server.use(
+      http.get('*/api/accounts', () => HttpResponse.json({ accounts: [] })),
+    )
+    renderApp()
+
+    expect(await screen.findByText('Good evening, Ava')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'New transfer' })).toBeDisabled()
+  })
+
   it('shows an error when a request fails, and Retry loads it', async () => {
     server.use(
       http.get(

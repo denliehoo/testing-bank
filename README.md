@@ -64,7 +64,7 @@ All three are built for the dashboard. Skeletons use the same CSS as the real co
 | --- | --- |
 | Loading | `/?delay=1500` |
 | Dashboard error + Retry | `/?scenario=error` (Retry fails again while the parameter is in the URL; remove it and reload to recover) |
-| Empty accounts / transactions / payees | `/?scenario=empty` (the transfer dialog then shows "You don't have any saved payees yet.") |
+| Empty accounts / transactions / payees | `/?scenario=empty` (`New transfer` is disabled, since there is no account to send from) |
 | Send failure | In the transfer, type `#fail` in the note |
 | Search results | Type `grab` in Recent transactions (`1 result`) |
 | More matches than rows | Type `t` (`8+ results`, the list is capped at eight) |
@@ -102,7 +102,6 @@ Examples of things I rejected or fixed:
 - A payee that is selected and then hidden by the payee search stays selected (the review step shows who it is). Moving between steps doesn't move focus or announce the new step to screen readers.
 - Input borders use the brief's `--border-strong`, which is about 1.5:1 against the surface (light) and 1.8:1 (dark), below the 3:1 WCAG suggests for UI boundaries. I may only use the brief's tokens; a real design system would darken it. No screen-reader pass (VoiceOver/NVDA) was done.
 - While search results load, the transaction list is dimmed to 40% opacity, which is below AA contrast for that moment (like a disabled control); it returns to full contrast when the results arrive.
-- With `?scenario=empty` there are no accounts, so a transfer can't be completed from that state.
 - A failure in any one of the three dashboard requests hides the whole dashboard. Isolating the transactions panel (inline error + Retry) would be a small change.
 - The greeting is always `Good evening, Ava`. I noticed that this is odd at other times of day, but the brief says to use it as written and that it doesn't need to change with the time of day, so I followed it (which is also why I left out the optional date line, which would sit awkwardly under it). In production I'd choose the greeting from the user's local time.
 - Pressing Continue twice very fast on the Amount step can skip the review: the second click lands on `Confirm transfer`, which sits in the same place, and sends the transfer. I found it by scripting a double-click, and I chose not to patch it with a click-count check because that only covers a mouse double-click. A real fix would be a design change: move `Confirm transfer` away from `Continue`'s position, or add a deliberate step on the review, such as a `I've reviewed the details` checkbox that unlocks the button after a short delay.
